@@ -19,6 +19,8 @@ const ALLOWED_ORIGINS = [
 // Cache for 1 second.
 const CACHE_SECONDS = 1
 
+const CACHE_ENABLED = false
+
 const cacheKeyForRequestAndBody = async (
   request: Request,
   body: string
@@ -58,6 +60,19 @@ export default {
     try {
       const method = request.method.toUpperCase()
       if (method === 'GET' || method === 'POST') {
+        if (!CACHE_ENABLED) {
+          const response = await fetch(request)
+          return new Response(response.body, {
+            headers: {
+              ...response.headers,
+              // CORS.
+              ...(ALLOWED_ORIGINS.some((r) => r.test(origin)) && {
+                'Access-Control-Allow-Origin': origin,
+              }),
+            },
+          })
+        }
+
         let bodies: string[]
         if (request.headers.get('content-type') === 'application/json') {
           const jsonBody = (await request.clone().json()) as unknown
