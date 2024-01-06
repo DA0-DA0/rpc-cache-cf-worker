@@ -16,10 +16,9 @@ const ALLOWED_ORIGINS = [
   /.+\-da0da0\.vercel\.app/,
 ]
 
-// Cache for 1 second.
-const CACHE_SECONDS = 1
-
-const CACHE_ENABLED = false
+// Cache for 3 seconds.
+const CACHE_SECONDS = 3
+const CACHE_ENABLED = true
 
 const cacheKeyForRequestAndBody = async (
   request: Request,
