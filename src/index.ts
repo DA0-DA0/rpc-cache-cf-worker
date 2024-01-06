@@ -16,6 +16,9 @@ const ALLOWED_ORIGINS = [
   /.+\-da0da0\.vercel\.app/,
 ]
 
+// Cache for 1 second.
+const CACHE_SECONDS = 1
+
 const cacheKeyForRequestAndBody = async (
   request: Request,
   body: string
@@ -134,9 +137,12 @@ export default {
 
               const cacheKey = await cacheKeyForRequestAndBody(request, body)
 
-              // Cache for 5 seconds.
+              // Cache.
               const response = new Response(responseBody, uncachedResponse)
-              response.headers.append('Cache-Control', 's-maxage=5')
+              response.headers.append(
+                'Cache-Control',
+                `s-maxage=${CACHE_SECONDS}`
+              )
 
               // Store in cache.
               ctx.waitUntil(cache.put(cacheKey, response.clone()))
