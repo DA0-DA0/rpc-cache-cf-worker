@@ -118,6 +118,12 @@ export default {
               headers: request.headers,
               body: uncachedBodies[0].body || undefined,
             })
+
+            // If fetched HTML (probably home page), just return uncached.
+            if (uncachedResponse.headers.get('content-type') === 'text/html') {
+              return uncachedResponse
+            }
+
             uncachedResponses = [await uncachedResponse.json()]
           }
 
